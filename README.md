@@ -17,6 +17,7 @@ Stop writing one-shot prompts. Ship composable, version-controlled skills that y
 - **Zero context waste** — agents load only `name` + `description` at startup; full content injects on invocation ([progressive disclosure](https://gotranscript.com/public/agent-skills-practical-way-to-cut-llm-context-bloat))
 - **Composable by design** — agents reference skills by name, skills nest under semantic areas, and the hierarchy stays flat enough for `npx skills` auto-discovery
 - **Deterministic scripts** — `scripts/` per skill for repeatable automation (migrations, lint fixes, scaffold generators)
+- **Runtime verification** — skills like `next-dev-loop` cross-check `/_next/mcp` (Next.js internals) against a real browser via `agent-browser`, catching four failure modes: compile, errors, behavior, React-level
 - **CI-validated** — every PR validates frontmatter, naming conventions, and directory structure
 
 ---
@@ -50,6 +51,9 @@ Technical CTO for Next.js teams — architecture decisions, delivery pipelines, 
 | `quality-gates` | Test / Delivery / Deploy | CI gates, coverage thresholds, incident response |
 | `typescript-ecosystem` | Coding / TypeScript | Strict config, branded types, dependency picks |
 | `api-design` | Coding / TypeScript | REST/GraphQL, error contracts, pagination, versioning |
+| `cache-components-adoption` | Next.js Runtime | Migrate app to Cache Components (Incremental/Direct, codemod, route-by-route loop) |
+| `cache-components-optimizer` | Next.js Runtime | Grow static shell, optimize SPA navigation |
+| `next-dev-loop` | Next.js Runtime | Edit/verify rhythm via `/_next/mcp` + `agent-browser` |
 
 ---
 
@@ -85,7 +89,7 @@ Hierarchy: `agent > skills > scripts, references`
 
 ## Context Bloat Checklist
 
-- [ ] Every skill stays under 500 lines; bulk goes in `references/`
+- [ ] Every skill stays under 500 lines; bulk goes in `references/` — complex procedural skills (e.g. `cache-components-adoption`) may exceed 500 lines where the procedure is the value
 - [ ] `AGENTS.md` lists only skills relevant to the current project
 - [ ] `context: fork` set for tasks exceeding 10 steps or using destructive tools
 - [ ] `allowed-tools` is as narrow as the skill allows
