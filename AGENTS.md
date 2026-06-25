@@ -1,36 +1,36 @@
 # OpenCode Agent Config
 
-Questo repository contiene agenti con skill organizzate per ambiti di competenza, seguendo lo standard [Agent Skills](https://agentskills.io) compatibile con Claude Code, Cursor, GitHub Copilot, Codex CLI, Amp, Goose e altri.
+This repository hosts AI agents with composable skills organized by competence area, following the [Agent Skills](https://agentskills.io) standard — compatible with Claude Code, Cursor, GitHub Copilot, Codex CLI, Amp, Goose, Windsurf, and Devin.
 
-## Struttura
+## Directory Structure
 
 ```
-agent/                     ← agente (directory principale)
-  SKILL.md                 ← metadati agente + system prompt
+agent/                     # Top-level agent directory
+  SKILL.md                 # Agent metadata + system prompt
   skills/
-    <area>/<skill-name>/   ← skill organizzate per area
-      SKILL.md             ← metadati skill + istruzioni
-      scripts/             ← script eseguibili (.py, .js, .sh)
-      references/          ← documentazione caricabile su richiesta (.md, .txt, .pdf)
+    <area>/<skill-name>/   # Skills organized by semantic area
+      SKILL.md             # Skill metadata + instructions
+      scripts/             # Executable automation (.py, .js, .sh)
+      references/          # On-demand reference docs (.md, .txt, .pdf)
 ```
 
-## Scrivere Skill
+## Writing Skills
 
-- Ogni skill vive sotto `skills/<area>/<nome>/SKILL.md`
-- Frontmatter richiede: `name`, `description`
-- SKILL.md sotto 500 righe; usa `references/` per documentazione più lunga
-- Tono imperativo, spiega il *perché* oltre al *cosa*
-- `scripts/` contiene script per task ripetitivi/deterministici
-- `references/` contiene documentazione di supporto
+- Each skill lives under `skills/<area>/<name>/SKILL.md`
+- Frontmatter requires: `name`, `description`
+- SKILL.md must stay under 500 lines; extend with `references/`
+- Use imperative tone, explain *why* not just *what*
+- `scripts/` holds automation for repetitive or deterministic tasks
+- `references/` holds supporting documentation loaded on demand
 
-## Naming
+## Naming Conventions
 
-- Nome directory skill: kebab-case
-- Campo `name` in frontmatter: corrisponde al nome directory
-- Nome area: una parola in italiano (es. `prodotto`, `foundation`)
+- Skill directory: kebab-case
+- Frontmatter `name` field: must match directory name
+- Area name: single word, lowercase (e.g. `product`, `foundation`)
 
-## Validazione
+## Validation
 
-Prima del commit:
-- `name` e `description` presenti in ogni SKILL.md
-- Ogni SKILL.md ha `scripts/` e `references/` (anche vuote)
+Before committing:
+- Every SKILL.md must have `name` and `description` in frontmatter
+- Every SKILL.md must have `scripts/` and `references/` directories (can be empty)

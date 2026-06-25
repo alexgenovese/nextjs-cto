@@ -1,72 +1,98 @@
 # agent-skills
 
 [![skills.sh](https://skills.sh/b/alexgenovese/agent-skills)](https://skills.sh/alexgenovese/agent-skills)
+![GitHub last commit](https://img.shields.io/github/last-commit/alexgenovese/agent-skills)
+![GitHub stars](https://img.shields.io/github/stars/alexgenovese/agent-skills?style=social)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-Raccolta di agenti AI con skill organizzate per ambiti di competenza, compatibili con lo standard **Agent Skills** (Claude Code, Cursor, GitHub Copilot, Codex CLI, Amp, Goose e altri).
+**Production-grade AI agent skills — portable across Claude Code, Cursor, GitHub Copilot, Codex CLI, and every major coding agent.**
 
-## Progressive disclosure (context minimo)
+Stop writing one-shot prompts. Ship composable, version-controlled skills that your AI agents discover and load on demand. Each skill stays under 500 lines; deep knowledge lives in `references/`, and agents only pay for what they use.
 
-Principio base di Agent Skills: all'avvio l'agente carica **solo `name` + `description`** di ogni skill. Il contenuto completo (`SKILL.md` + references) viene iniettato **solo quando la skill viene invocata** — nessuno spreco di contesto. [gotranscript](https://gotranscript.com/public/agent-skills-practical-way-to-cut-llm-context-bloat)
+---
 
-| Livello | Meccanismo | Quando usarlo |
-|---------|------------|---------------|
-| **1. Progressive disclosure** | L'agente vede solo `name`/`description` di tutte le skills. Legge il `SKILL.md` completo solo se decide di usarla. | Sempre attivo; mantiene il contesto minimo. |
-| **2. Invocazione esplicita** | `Usa la skill "nome-skill" per…` o `/nome-skill "query"` | Forzi l'uso, eviti ambiguità. |
-| **3. Sub-agent isolato** | `context: fork` → esecuzione in sub-agent con contesto separato | Task lunghi/rischiosi, eviti context rot. |
-| **4. `allowed-tools` ristretto** | Limit i tool visibili alla skill attiva | Sandboxing, sicurezza, focus. |
-| **5. Orchestratore esterno** | Policy engine che inietta la skill giusta al momento giusto basandosi su eventi | Team/workflow complessi, skill amnesia. |
+## Features
 
-## Standard cross-tool (Agent Skills)
+- **Cross-tool compatible** — same `SKILL.md` format works in Claude Code, Cursor, VS Code Copilot, Codex CLI, Amp, Goose, and Windsurf
+- **Zero context waste** — agents load only `name` + `description` at startup; full content injects on invocation ([progressive disclosure](https://gotranscript.com/public/agent-skills-practical-way-to-cut-llm-context-bloat))
+- **Composable by design** — agents reference skills by name, skills nest under semantic areas, and the hierarchy stays flat enough for `npx skills` auto-discovery
+- **Deterministic scripts** — `scripts/` per skill for repeatable automation (migrations, lint fixes, scaffold generators)
+- **CI-validated** — every PR validates frontmatter, naming conventions, and directory structure
 
-Dal 2025-2026 i principali strumenti AI adottano lo stesso formato:
+---
 
-| Componente | Formato |
-|------------|---------|
-| **Skill** | Cartella con `SKILL.md` | Markdown + YAML frontmatter (`name`, `description`) |
-| **Script** | `.py`, `.js`, `.sh` | Nella sottocartella `scripts/` |
-| **Riferimenti** | `.md`, `.txt`, `.pdf` | Nella sottocartella `references/` |
-| **Indice progetto** | `AGENTS.md` | Universale (Claude, Copilot, Cursor, Codex, Windsurf, Amp, Devin) |
+## Quick Start
 
-## Agenti
+```bash
+# Install the full collection (agent + all skills)
+npx skills add alexgenovese/agent-skills
+
+# Run a single skill without installing
+npx skills use alexgenovese/agent-skills@nextjs-core | opencode
+
+# Or invoke by name in any agent:
+# "Use the skill 'deployment-strategy' to plan this release"
+```
+
+---
+
+## Agents
 
 ### [nextjs-expert-cto](nextjs-expert-cto/)
 
-CTO tecnico specializzato Next.js — strategia tecnica, delivery e qualità del codice.
+Technical CTO for Next.js teams — architecture decisions, delivery pipelines, code quality, and team velocity.
 
-**Skill:** `technical-decision-making`, `team-velocity`, `deployment-strategy`, `quality-gates`, `typescript-ecosystem`, `api-design`
+| Skill | Area | Purpose |
+|-------|------|---------|
+| `technical-decision-making` | Project Management | ADRs, build-vs-buy, framework evaluation |
+| `team-velocity` | Project Management | Bottleneck analysis, cycle time, throughput |
+| `deployment-strategy` | Test / Delivery / Deploy | Blue-green, canary, feature flags, rollback |
+| `quality-gates` | Test / Delivery / Deploy | CI gates, coverage thresholds, incident response |
+| `typescript-ecosystem` | Coding / TypeScript | Strict config, branded types, dependency picks |
+| `api-design` | Coding / TypeScript | REST/GraphQL, error contracts, pagination, versioning |
 
-## Struttura
+---
+
+## How Progressive Disclosure Works
+
+Agent Skills keep context lean by design. At startup the agent sees only a lightweight index — the full payload arrives when needed.
+
+| Level | Mechanism | When |
+|-------|-----------|------|
+| **1. Default** | Agent loads `name`/`description` for every skill. Full `SKILL.md` + `references/` injected on invocation. | Always on. Zero context tax. |
+| **2. Explicit invocation** | `Use the skill "deployment-strategy" to...` or `/<skill-name> <query>` | Force a specific skill, avoid ambiguity. |
+| **3. Isolated sub-agent** | `context: fork` in frontmatter runs the skill in a separate context; returns only the result. | Long-running or destructive tasks. |
+| **4. Scoped tools** | `allowed-tools:` limits which tools the skill can call. | Sandboxing, security, focus. |
+| **5. External orchestrator** | Policy engine (Agent RuleZ, MCP Optimizer) injects the right skill based on event triggers. | Complex team workflows, skill amnesia in long sessions. |
+
+---
+
+## Directory Structure
 
 ```
-agent/                          ← agente (directory principale)
-  SKILL.md                      ← definizione + sistema
+agent/                          # Top-level agent directory
+  SKILL.md                      # Agent definition: name, description, skills list, system prompt
   skills/
-    <area>/<skill-name>/        ← skill organizzata per area semantica
-      SKILL.md                  ← metadati + istruzioni
-      scripts/                  ← script eseguibili (.py, .js, .sh)
-      references/               ← documentazione di supporto (.md, .txt, .pdf)
+    <area>/<skill-name>/        # Skill organized by semantic area
+      SKILL.md                  # Skill metadata + instructions (≤ 500 lines)
+      scripts/                  # Executable automation (.py, .js, .sh)
+      references/               # Deep reference docs loaded on demand (.md, .txt, .pdf)
 ```
 
-**Gerarchia**: `agent > skills > scripts, references`
+Hierarchy: `agent > skills > scripts, references`
 
-## Checklist context bloat
+---
 
-- [ ] Ogni skill < 500 righe; dettagli in `references/`
-- [ ] `AGENTS.md` elenca solo skills del progetto corrente
-- [ ] `context: fork` per task > 10 step o con tool distruttivi
-- [ ] `allowed-tools` minimalista per ogni skill
-- [ ] Sessioni lunghe: reset contesto (`/clear` o nuovo terminale) tra task diversi
+## Context Bloat Checklist
 
-## Install
+- [ ] Every skill stays under 500 lines; bulk goes in `references/`
+- [ ] `AGENTS.md` lists only skills relevant to the current project
+- [ ] `context: fork` set for tasks exceeding 10 steps or using destructive tools
+- [ ] `allowed-tools` is as narrow as the skill allows
+- [ ] Long sessions reset context (`/clear` or fresh terminal) between unrelated tasks
 
-```bash
-# Installa agente e skill
-npx skills add alexgenovese/agent-skills
-
-# Usa una skill specifica
-npx skills use alexgenovese/agent-skills@nextjs-core | opencode
-```
+---
 
 ## License
 
-MIT
+MIT. Use it, fork it, ship it.
