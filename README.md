@@ -2,7 +2,28 @@
 
 [![skills.sh](https://skills.sh/b/alexgenovese/agent-skills)](https://skills.sh/alexgenovese/agent-skills)
 
-A curated collection of agent skills for OpenCode, Claude Code, Cursor, Codex, and any agent that supports the [Agent Skills](https://agentskills.io) format.
+A curated collection of agent skills and agents for OpenCode, Claude Code, Cursor, Codex, and any tool that supports the [Agent Skills](https://agentskills.io) format.
+
+## Structure
+
+```
+skills/
+  prodotto/             # Product competence
+    nextjs-core/        # Next.js App Router core expertise
+  foundation/           # Software engineering foundation
+    plan/               # Planning & architecture
+      task-breakdown/   # Decompose work into increments
+      architecture-design/  # System design & ADRs
+      time-estimation/  # Realistic effort estimates
+    coding/             # Implementation & quality
+      code-review/      # Systematic code review
+      testing-patterns/ # Tests at every level
+      refactoring/      # Structural change, safe execution
+agents/                 # Pre-built agent definitions
+  software-engineer.md  # Full-stack engineer agent
+  nextjs-reviewer.md    # Next.js project reviewer
+  code-simplifier.md    # Code quality specialist
+```
 
 ## Install
 
@@ -10,48 +31,68 @@ A curated collection of agent skills for OpenCode, Claude Code, Cursor, Codex, a
 # Install all skills
 npx skills add alexgenovese/agent-skills
 
-# Install a specific skill
-npx skills add alexgenovese/agent-skills --skill skill-name
+# Install skills from a specific area
+npx skills add alexgenovese/agent-skills --skill nextjs-core
 
 # Use a skill without installing
-npx skills use alexgenovese/agent-skills@skill-name | opencode
+npx skills use alexgenovese/agent-skills@nextjs-core | opencode
+```
+
+> **Nota:** le skill sotto `foundation/plan/` e `foundation/coding/` sono a 3 livelli di profondità. Usa `npx skills add alexgenovese/agent-skills --full-depth` se il tuo client skills non le trova automaticamente.
+
+## Agents
+
+Gli agenti in `agents/` sono file `.md` con frontmatter YAML che referenziano le skill. Possono essere usati come definizioni per agenti in OpenCode, Claude Code, e altri tool compatibili.
+
+| Agent | Descrizione |
+|-------|-------------|
+| [software-engineer](agents/software-engineer.md) | Pianificazione, architettura, implementazione e revisione |
+| [nextjs-reviewer](agents/nextjs-reviewer.md) | Revisione progetti Next.js con auto-fix critici |
+| [code-simplifier](agents/code-simplifier.md) | Semplificazione e refactoring di codice |
+
+## Agent Format
+
+```markdown
+---
+name: agent-name
+description: What this agent does
+skills:
+  - skill-name-1
+  - skill-name-2
+---
+Instructions for the agent...
 ```
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| [example-skill](skills/example-skill/) | Reference implementation showing the Agent Skills format and conventions |
-| <!-- add your skills here --> | |
+| Skill | Area | Description |
+|-------|------|-------------|
+| [nextjs-core](skills/prodotto/nextjs-core/) | Prodotto | Next.js App Router, caching, Server Components |
+| [task-breakdown](skills/foundation/plan/task-breakdown/) | Foundation / Plan | Decomporre il lavoro in task granulari |
+| [architecture-design](skills/foundation/plan/architecture-design/) | Foundation / Plan | Decisioni architetturali e ADR |
+| [time-estimation](skills/foundation/plan/time-estimation/) | Foundation / Plan | Stime accurate con range di confidenza |
+| [code-review](skills/foundation/coding/code-review/) | Foundation / Coding | Revisione strutturata per priorità |
+| [testing-patterns](skills/foundation/coding/testing-patterns/) | Foundation / Coding | Testing trophy, async, Next.js |
+| [refactoring](skills/foundation/coding/refactoring/) | Foundation / Coding | Refactoring sicuro con characterization test |
 
-## Creating a Skill
-
-Skills are directories with a `SKILL.md` file and YAML frontmatter:
+## Schema SKILL.md
 
 ```markdown
 ---
-name: my-skill
-description: What this skill does and when to use it
+name: skill-name
+description: What it does and when to trigger
 ---
 
-# My Skill
+# Skill Name
 
 Instructions for the agent...
+
+## References
+
+See `references/file.md` for deeper docs.  <!-- loaded on demand -->
 ```
 
-Use the [template](template/SKILL.md) as a starting point.
-
-```
-skills/<skill-name>/
-├── SKILL.md        # Required: name, description, instructions
-├── references/     # Optional: deep docs loaded on demand
-├── scripts/        # Optional: executable helpers
-└── assets/         # Optional: templates, icons, fonts
-```
-
-## Compatibility
-
-These skills follow the [Agent Skills specification](https://agentskills.io) and work with any compatible agent. See [skills.sh](https://skills.sh) for the ecosystem.
+Ogni skill può avere `references/`, `scripts/`, o `assets/` per contenuti extra caricati su richiesta.
 
 ## License
 

@@ -1,19 +1,34 @@
 # OpenCode Agent Config
 
-This repository is a collection of agent skills for OpenCode and other coding agents. Skills are stored under `skills/<name>/SKILL.md` with YAML frontmatter.
+Raccolta di skill e agenti per OpenCode e altri agenti compatibili. Le skill sono organizzate per ambiti di competenza sotto `skills/`.
 
-## Writing Skills
+## Struttura
 
-- Each skill is a directory under `skills/` containing a `SKILL.md` with `name` and `description` in YAML frontmatter
-- Keep SKILL.md under 500 lines; use `references/` for deeper docs
-- Use imperative tone, explain the "why" behind instructions
+```
+skills/
+  prodotto/        # Competenze di prodotto
+  foundation/
+    plan/          # Pianificazione e architettura
+    coding/        # Implementazione e qualità
+agents/            # Definizioni agente .md
+```
 
-## Naming Convention
+## Scrivere Skill
 
-Skill directory names and `name` frontmatter fields use lowercase with hyphens (kebab-case).
+- Ogni skill è una directory sotto `skills/` con `SKILL.md` YAML frontmatter (`name`, `description`)
+- SKILL.md sotto 500 righe; usa `references/` per documentazione approfondita
+- Tono imperativo, spiega il *perché* oltre al *cosa*
+- Nome directory in kebab-case, corrisponde al campo `name` in frontmatter
 
-## Validation
+## Scrivere Agenti
 
-Before committing, ensure:
-- `name` and `description` are present in frontmatter
-- Description explains both *what* and *when* the skill should activate
+- Gli agenti sono file `.md` in `agents/` con frontmatter YAML
+- Frontmatter richiede: `name`, `description`, `skills` (lista di skill name)
+- Il corpo contiene le istruzioni specifiche dell'agente
+
+## Validazione
+
+Prima del commit:
+- `name` e `description` presenti in ogni SKILL.md
+- `name` corrisponde al nome della directory
+- Ogni SKILL.md elencato in `skills/` è referenziato da almeno un agente
