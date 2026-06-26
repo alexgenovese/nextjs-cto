@@ -11,29 +11,20 @@ Stop writing one-shot prompts. Ship composable, version-controlled skills that y
 
 ---
 
-## Features
-
-- **Cross-tool compatible** — same `SKILL.md` format works in Claude Code, Cursor, VS Code Copilot, Codex CLI, Amp, Goose, and Windsurf
-- **Zero context waste** — agents load only `name` + `description` at startup; full content injects on invocation ([progressive disclosure](https://gotranscript.com/public/agent-skills-practical-way-to-cut-llm-context-bloat))
-- **Composable by design** — agents reference skills by name, skills nest under semantic areas, and the hierarchy stays flat enough for `npx skills` auto-discovery
-- **Deterministic scripts** — `scripts/` per skill for repeatable automation (migrations, lint fixes, scaffold generators)
-- **Runtime verification** — skills like `next-dev-loop` cross-check `/_next/mcp` (Next.js internals) against a real browser via `agent-browser`, catching four failure modes: compile, errors, behavior, React-level
-- **CI-validated** — every PR validates frontmatter, naming conventions, and directory structure
-
----
-
 ## Quick Start
 
 ```bash
-# Install the full collection (agent + all skills)
+# Install the full collection (agent + all 9 skills)
 npx skills add alexgenovese/agent-skills
 
 # Run a single skill without installing
-npx skills use alexgenovese/agent-skills@nextjs-core | opencode
+npx skills use alexgenovese/agent-skills@cache-components-adoption
 
 # Or invoke by name in any agent:
 # "Use the skill 'deployment-strategy' to plan this release"
 ```
+
+Discoverable by `npx skills` at `skills/<name>/SKILL.md`. [See skills.sh](https://skills.sh/alexgenovese/agent-skills).
 
 ---
 
@@ -45,21 +36,45 @@ Technical CTO for Next.js teams — architecture decisions, delivery pipelines, 
 
 | Skill | Area | Purpose |
 |-------|------|---------|
-| `technical-decision-making` | Project Management | ADRs, build-vs-buy, framework evaluation |
-| `team-velocity` | Project Management | Bottleneck analysis, cycle time, throughput |
-| `deployment-strategy` | Test / Delivery / Deploy | Blue-green, canary, feature flags, rollback |
-| `quality-gates` | Test / Delivery / Deploy | CI gates, coverage thresholds, incident response |
-| `typescript-ecosystem` | Coding / TypeScript | Strict config, branded types, dependency picks |
-| `api-design` | Coding / TypeScript | REST/GraphQL, error contracts, pagination, versioning |
-| `cache-components-adoption` | Next.js Runtime | Migrate app to Cache Components (Incremental/Direct, codemod, route-by-route loop) |
-| `cache-components-optimizer` | Next.js Runtime | Grow static shell, optimize SPA navigation |
-| `next-dev-loop` | Next.js Runtime | Edit/verify rhythm via `/_next/mcp` + `agent-browser` |
+| [`technical-decision-making`](skills/technical-decision-making/) | Project Management | ADRs, build-vs-buy, framework evaluation |
+| [`team-velocity`](skills/team-velocity/) | Project Management | Bottleneck analysis, cycle time, throughput |
+| [`deployment-strategy`](skills/deployment-strategy/) | Test / Delivery / Deploy | Blue-green, canary, feature flags, rollback |
+| [`quality-gates`](skills/quality-gates/) | Test / Delivery / Deploy | CI gates, coverage thresholds, incident response |
+| [`typescript-ecosystem`](skills/typescript-ecosystem/) | Coding / TypeScript | Strict config, branded types, dependency picks |
+| [`api-design`](skills/api-design/) | Coding / TypeScript | REST/GraphQL, error contracts, pagination, versioning |
+| [`cache-components-adoption`](skills/cache-components-adoption/) | Next.js Runtime | Migrate app to Cache Components (Incremental/Direct, codemod, route-by-route loop) |
+| [`cache-components-optimizer`](skills/cache-components-optimizer/) | Next.js Runtime | Grow static shell, optimize SPA navigation |
+| [`next-dev-loop`](skills/next-dev-loop/) | Next.js Runtime | Edit/verify rhythm via `/_next/mcp` + `agent-browser` |
+
+---
+
+## Features
+
+- **Cross-tool compatible** — same `SKILL.md` format works in Claude Code, Cursor, VS Code Copilot, Codex CLI, Amp, Goose, and Windsurf
+- **Zero context waste** — agents load only `name` + `description` at startup; full content injects on invocation ([progressive disclosure](https://gotranscript.com/public/agent-skills-practical-way-to-cut-llm-context-bloat))
+- **skills.sh discoverable** — `npx skills add alexgenovese/agent-skills` finds all skills at `skills/<name>/SKILL.md`
+- **Deterministic scripts** — `scripts/` per skill for repeatable automation (migrations, lint fixes, scaffold generators)
+- **Runtime verification** — skills like `next-dev-loop` cross-check `/_next/mcp` (Next.js internals) against a real browser via `agent-browser`
+- **CI-validated** — every PR validates frontmatter, naming conventions, and directory structure
+
+---
+
+## Directory Structure
+
+```
+skills/                         # skills.sh discovers skills/<name>/SKILL.md
+  <skill-name>/                 # kebab-case skill directory
+    SKILL.md                    # YAML frontmatter (name, description) + instructions
+    scripts/                    # Executable automation (.py, .js, .sh)
+    references/                 # Deep reference docs loaded on demand (.md, .txt, .pdf)
+
+<agent>/                        # Agent directory (optional, for agent-based tools)
+  SKILL.md                      # Agent definition referencing skills by name
+```
 
 ---
 
 ## How Progressive Disclosure Works
-
-Agent Skills keep context lean by design. At startup the agent sees only a lightweight index — the full payload arrives when needed.
 
 | Level | Mechanism | When |
 |-------|-----------|------|
@@ -68,22 +83,6 @@ Agent Skills keep context lean by design. At startup the agent sees only a light
 | **3. Isolated sub-agent** | `context: fork` in frontmatter runs the skill in a separate context; returns only the result. | Long-running or destructive tasks. |
 | **4. Scoped tools** | `allowed-tools:` limits which tools the skill can call. | Sandboxing, security, focus. |
 | **5. External orchestrator** | Policy engine (Agent RuleZ, MCP Optimizer) injects the right skill based on event triggers. | Complex team workflows, skill amnesia in long sessions. |
-
----
-
-## Directory Structure
-
-```
-agent/                          # Top-level agent directory
-  SKILL.md                      # Agent definition: name, description, skills list, system prompt
-  skills/
-    <area>/<skill-name>/        # Skill organized by semantic area
-      SKILL.md                  # Skill metadata + instructions (≤ 500 lines)
-      scripts/                  # Executable automation (.py, .js, .sh)
-      references/               # Deep reference docs loaded on demand (.md, .txt, .pdf)
-```
-
-Hierarchy: `agent > skills > scripts, references`
 
 ---
 

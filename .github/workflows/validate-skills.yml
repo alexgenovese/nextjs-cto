@@ -3,11 +3,13 @@ name: Validate
 on:
   pull_request:
     paths:
-      - 'nextjs-expert-cto/**/*.md'
+      - 'skills/**/*.md'
+      - 'nextjs-expert-cto/*.md'
   push:
     branches: [main]
     paths:
-      - 'nextjs-expert-cto/**/*.md'
+      - 'skills/**/*.md'
+      - 'nextjs-expert-cto/*.md'
 
 jobs:
   validate:
@@ -37,7 +39,7 @@ jobs:
             if [ "$name" != "$dir" ]; then
               echo "    WARNING: name '$name' != directory '$dir'"
             fi
-          done < <(find . -name SKILL.md -not -path './.github/*')
+          done < <(find skills -name SKILL.md)
           [ "$errors" -eq 0 ] && echo "All skills valid." || exit 1
 
       - name: Validate agent SKILL.md
