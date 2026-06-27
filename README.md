@@ -1,101 +1,76 @@
-# agent-skills
+# 🚀 Agent Skills Library
 
-[![skills.sh](https://skills.sh/b/alexgenovese/agent-skills)](https://skills.sh/alexgenovese/agent-skills)
-![GitHub last commit](https://img.shields.io/github/last-commit/alexgenovese/agent-skills)
-![GitHub stars](https://img.shields.io/github/stars/alexgenovese/agent-skills?style=social)
-![License](https://img.shields.io/badge/license-MIT-blue)
+A high-performance, composable library of AI agent skills following the [Agent Skills Specification](https://agentskills.io). This repository provides a modular architecture for AI agents to specialize in high-level technical leadership, specifically tailored for **Next.js**, **TypeScript**, and **Modern Web Architecture**.
 
-**Production-grade AI agent skills — portable across Claude Code, Cursor, GitHub Copilot, Codex CLI, and every major coding agent.**
+## 🛠️ Architecture
 
-Stop writing one-shot prompts. Ship composable, version-controlled skills that your AI agents discover and load on demand. Each skill stays under 500 lines; deep knowledge lives in `references/`, and agents only pay for what they use.
+This library uses a **Composable Skill Architecture**. Instead of one massive system prompt, capabilities are split into atomic "skills" that can be dynamically loaded by an orchestrator agent.
+
+### Structure
+- `skills/`: Contains specialized capabilities. Each folder contains a `SKILL.md` with YAML frontmatter for discovery.
+- `AGENTS.md`: The global configuration and standards for the repository.
+- `nextjs-expert-cto`: A high-level orchestrator agent that composes multiple lower-level skills to act as a Technical Leader.
 
 ---
 
-## Quick Start
+## 🌟 Featured Agent: Next.js Expert CTO
 
+The `nextjs-expert-cto` is a CTO-level AI agent designed to lead technical strategy and ensure excellence in Next.js projects.
+
+### Core Capabilities
+The CTO agent orchestrates the following specialized skills:
+
+| Skill | Focus | Example Use Case |
+| :--- | :--- | :--- |
+| **Technical Decision Making** | Trade-off analysis & RFCs | *"Should we use Server Actions or a dedicated API route for this feature?"* |
+| **Team Velocity** | DevX & Bottleneck removal | *"Our PR review cycle is too slow; how can we optimize the workflow?"* |
+| **Deployment Strategy** | CI/CD & Zero-downtime | *"Design a deployment pipeline for a multi-region Vercel setup."* |
+| **Quality Gates** | Testing & Linting standards | *"Define the quality gates for our production-ready TypeScript components."* |
+| **TypeScript Ecosystem** | Type safety & Design patterns | *"How do we implement a strictly typed event bus in this architecture?"* |
+| **API Design** | Schema & Contract design | *"Design a scalable API contract for our new e-commerce checkout flow."* |
+| **Cache Components Adoption** | Strategic caching patterns | *"Determine which parts of the app should use PPR (Partial Prerendering)."* |
+| **Cache Components Optimizer** | Performance tuning | *"Optimize the data fetching strategy to reduce TTFB for the product pages."* |
+| **Next Dev Loop** | Fast iteration cycles | *"Optimize our local development experience to reduce rebuild times."* |
+
+### 🚀 How to Use
+
+#### For Claude Code / Cursor / Windsurf
+1. **Index the Repository**: Point your AI agent to this directory.
+2. **Activate the CTO**: Reference the `skills/nextjs-expert-cto/SKILL.md` file.
+3. **Prompt**:
+   - *"Act as the `nextjs-expert-cto` and review my current architecture."*
+   - *"Using the `technical-decision-making` skill, create an RFC for migrating to the App Router."*
+
+#### For `npx skills`
+Run the following command to discover skills in this repo:
 ```bash
-# Install the full collection (agent + all 9 skills)
-npx skills add alexgenovese/agent-skills
-
-# Run a single skill without installing
-npx skills use alexgenovese/agent-skills@cache-components-adoption
-
-# Or invoke by name in any agent:
-# "Use the skill 'deployment-strategy' to plan this release"
-```
-
-Discoverable by `npx skills` at `skills/<name>/SKILL.md`. [See skills.sh](https://skills.sh/alexgenovese/agent-skills).
-
----
-
-## Agents
-
-### [nextjs-expert-cto](nextjs-expert-cto/)
-
-Technical CTO for Next.js teams — architecture decisions, delivery pipelines, code quality, and team velocity.
-
-| Skill | Area | Purpose |
-|-------|------|---------|
-| [`technical-decision-making`](skills/technical-decision-making/) | Project Management | ADRs, build-vs-buy, framework evaluation |
-| [`team-velocity`](skills/team-velocity/) | Project Management | Bottleneck analysis, cycle time, throughput |
-| [`deployment-strategy`](skills/deployment-strategy/) | Test / Delivery / Deploy | Blue-green, canary, feature flags, rollback |
-| [`quality-gates`](skills/quality-gates/) | Test / Delivery / Deploy | CI gates, coverage thresholds, incident response |
-| [`typescript-ecosystem`](skills/typescript-ecosystem/) | Coding / TypeScript | Strict config, branded types, dependency picks |
-| [`api-design`](skills/api-design/) | Coding / TypeScript | REST/GraphQL, error contracts, pagination, versioning |
-| [`cache-components-adoption`](skills/cache-components-adoption/) | Next.js Runtime | Migrate app to Cache Components (Incremental/Direct, codemod, route-by-route loop) |
-| [`cache-components-optimizer`](skills/cache-components-optimizer/) | Next.js Runtime | Grow static shell, optimize SPA navigation |
-| [`next-dev-loop`](skills/next-dev-loop/) | Next.js Runtime | Edit/verify rhythm via `/_next/mcp` + `agent-browser` |
-
----
-
-## Features
-
-- **Cross-tool compatible** — same `SKILL.md` format works in Claude Code, Cursor, VS Code Copilot, Codex CLI, Amp, Goose, and Windsurf
-- **Zero context waste** — agents load only `name` + `description` at startup; full content injects on invocation ([progressive disclosure](https://gotranscript.com/public/agent-skills-practical-way-to-cut-llm-context-bloat))
-- **skills.sh discoverable** — `npx skills add alexgenovese/agent-skills` finds all skills at `skills/<name>/SKILL.md`
-- **Deterministic scripts** — `scripts/` per skill for repeatable automation (migrations, lint fixes, scaffold generators)
-- **Runtime verification** — skills like `next-dev-loop` cross-check `/_next/mcp` (Next.js internals) against a real browser via `agent-browser`
-- **CI-validated** — every PR validates frontmatter, naming conventions, and directory structure
-
----
-
-## Directory Structure
-
-```
-skills/                         # skills.sh discovers skills/<name>/SKILL.md
-  <skill-name>/                 # kebab-case skill directory
-    SKILL.md                    # YAML frontmatter (name, description) + instructions
-    scripts/                    # Executable automation (.py, .js, .sh)
-    references/                 # Deep reference docs loaded on demand (.md, .txt, .pdf)
-
-<agent>/                        # Agent directory (optional, for agent-based tools)
-  SKILL.md                      # Agent definition referencing skills by name
+npx skills .
 ```
 
 ---
 
-## How Progressive Disclosure Works
+## 📁 Repository Layout
 
-| Level | Mechanism | When |
-|-------|-----------|------|
-| **1. Default** | Agent loads `name`/`description` for every skill. Full `SKILL.md` + `references/` injected on invocation. | Always on. Zero context tax. |
-| **2. Explicit invocation** | `Use the skill "deployment-strategy" to...` or `/<skill-name> <query>` | Force a specific skill, avoid ambiguity. |
-| **3. Isolated sub-agent** | `context: fork` in frontmatter runs the skill in a separate context; returns only the result. | Long-running or destructive tasks. |
-| **4. Scoped tools** | `allowed-tools:` limits which tools the skill can call. | Sandboxing, security, focus. |
-| **5. External orchestrator** | Policy engine (Agent RuleZ, MCP Optimizer) injects the right skill based on event triggers. | Complex team workflows, skill amnesia in long sessions. |
+```text
+.
+├── AGENTS.md               # Global standards & Agent Config
+├── LICENSE                 # Project License
+├── README.md               # This guide
+└── skills/
+    ├── nextjs-expert-cto/  # Orchestrator Agent
+    │   └── SKILL.md        # System prompt & Skill mapping
+    └── <specialized-skill>/ # Atomic capabilities
+        ├── SKILL.md        # Logic & Instructions
+        ├── references/      # Domain-specific knowledge
+        └── scripts/         # Automation tools
+```
+
+## 🤝 Contributing
+
+1. **Create a new skill**: Add a folder in `skills/<skill-name>/`.
+2. **Define the skill**: Create a `SKILL.md` with the required YAML frontmatter (`name`, `description`).
+3. **Add references**: Place any supporting `.md` or `.pdf` files in the `references/` folder.
+4. **Link to Agent**: Add the skill name to the `skills:` list in the `nextjs-expert-cto`'s `SKILL.md`.
 
 ---
-
-## Context Bloat Checklist
-
-- [ ] Every skill stays under 500 lines; bulk goes in `references/` — complex procedural skills (e.g. `cache-components-adoption`) may exceed 500 lines where the procedure is the value
-- [ ] `AGENTS.md` lists only skills relevant to the current project
-- [ ] `context: fork` set for tasks exceeding 10 steps or using destructive tools
-- [ ] `allowed-tools` is as narrow as the skill allows
-- [ ] Long sessions reset context (`/clear` or fresh terminal) between unrelated tasks
-
----
-
-## License
-
-MIT. Use it, fork it, ship it.
+*Powered by the [Agent Skills](https://agentskills.io) standard.*
